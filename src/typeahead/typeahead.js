@@ -73,6 +73,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         //If input matches an item of the list exactly, select it automatically
         var selectOnExact = attrs.typeaheadSelectOnExact ? originalScope.$eval(attrs.typeaheadSelectOnExact) : false;
 
+        var closeOnBlur = attrs.typeaheadCloseOnBlur ?  originalScope.$eval(attrs.typeaheadCloseOnBlur) : false;
+
         //INTERNAL VARIABLES
 
         //model setter executed upon match selection
@@ -255,7 +257,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           scope.position.top += element.prop('offsetHeight');
         }
 
-        resetMatches();
+
+        Matches();
 
         //we need to propagate user's query so we can higlight matches
         scope.query = undefined;
@@ -406,6 +409,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           }
           hasFocus = false;
           selected = false;
+
+          if(closeOnBlur) {
+            resetMatches();
+          }
         });
 
         // Keep reference to click handler to unbind it.
