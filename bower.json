@@ -10,7 +10,19 @@
   ],
   "license": "MIT",
   "ignore": [
-
+    "docs",
+    "misc",
+    "src",
+    "template",
+    ".editorconfig",
+    ".gitattributes",
+    ".jshintrc",
+    ".travis.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "LICENSE"
   ],
   "description": "Native AngularJS (Angular) directives for Bootstrap.",
   "version": "0.13.4",
