@@ -5180,9 +5180,6 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           scope.position.top += element.prop('offsetHeight');
         }
 
-
-        Matches();
-
         //we need to propagate user's query so we can higlight matches
         scope.query = undefined;
 

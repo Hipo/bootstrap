@@ -292,6 +292,8 @@ module.exports = function(grunt) {
     if (dir) { grunt.config('dist', dir); }
   });
 
+  grunt.registerTask('hipo-build', ['html2js', 'build']);
+
   grunt.registerTask('build', 'Create bootstrap build files', function() {
     var _ = grunt.util._;
 
