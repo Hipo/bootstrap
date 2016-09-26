@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 0.13.4 - 2016-09-22
+ * Version: 0.13.4 - 2016-09-26
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.transition","ui.bootstrap.typeahead"]);
@@ -4999,6 +4999,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
         var closeOnBlur = attrs.typeaheadCloseOnBlur ?  originalScope.$eval(attrs.typeaheadCloseOnBlur) : false;
 
+        var removeScrollIfListVisible = attrs.typeaheadRemoveScrollIfListVisible ? originalScope.$eval(attrs.typeaheadRemoveScrollIfListVisible) : false;
+
         //INTERNAL VARIABLES
 
         //model setter executed upon match selection
@@ -5063,6 +5065,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           scope.matches = [];
           scope.activeIdx = -1;
           element.attr('aria-expanded', false);
+
+          if(removeScrollIfListVisible) {
+            angular.element("body").css("overflow", "visible");
+          }
         };
 
         var getMatchId = function(index) {
@@ -5119,6 +5125,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
                 recalculatePosition();
 
                 element.attr('aria-expanded', true);
+                if(removeScrollIfListVisible) {
+                  angular.element("body").css("overflow", "hidden");
+                }
+
 
                 //Select the single remaining option if user input matches
                 if (selectOnExact && scope.matches.length === 1 && inputIsExactMatch(inputValue, 0)) {
