@@ -75,7 +75,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
         var closeOnBlur = attrs.typeaheadCloseOnBlur ?  originalScope.$eval(attrs.typeaheadCloseOnBlur) : false;
 
-        var removeScrollIfListVisible = attrs.typeaheadRemoveScrollIfListVisible ? originalScope.$eval(attrs.typeaheadRemoveScrollIfListVisible) : false;
+        var bodyClassWhileListVisible = attrs.typeaheadBodyClassWhileListVisible ? originalScope.$eval(attrs.typeaheadBodyClassWhileListVisible) : null;
 
         //INTERNAL VARIABLES
 
@@ -142,8 +142,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           scope.activeIdx = -1;
           element.attr('aria-expanded', false);
 
-          if(removeScrollIfListVisible) {
-            angular.element("body").css("overflow", "visible");
+          if(bodyClassWhileListVisible) {
+            angular.element("body").removeClass(bodyClassWhileListVisible);
           }
         };
 
@@ -201,8 +201,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
                 recalculatePosition();
 
                 element.attr('aria-expanded', true);
-                if(removeScrollIfListVisible) {
-                  angular.element("body").css("overflow", "hidden");
+                if(bodyClassWhileListVisible) {
+                  angular.element("body").addClass(bodyClassWhileListVisible);
                 }
 
 
