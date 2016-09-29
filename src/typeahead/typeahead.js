@@ -75,7 +75,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
         var closeOnBlur = attrs.typeaheadCloseOnBlur ?  originalScope.$eval(attrs.typeaheadCloseOnBlur) : false;
 
-        var bodyClassWhileListVisible = attrs.typeaheadBodyClassWhileListVisible ? originalScope.$eval(attrs.typeaheadBodyClassWhileListVisible) : null;
+        var bodyClassWhileListVisible = attrs.typeaheadBodyClassWhileListVisible;
 
         //INTERNAL VARIABLES
 
