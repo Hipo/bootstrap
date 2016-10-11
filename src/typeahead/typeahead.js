@@ -420,7 +420,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           selected = false;
 
           if(closeOnBlur) {
-            resetMatches();
+            $timeout(function() {
+              resetMatches();
+            }, 100);
           }
         });
 
