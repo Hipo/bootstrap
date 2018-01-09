@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 0.13.7 - 2017-01-26
+ * Version: 0.13.8 - 2018-01-09
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.transition","ui.bootstrap.typeahead"]);
@@ -5067,7 +5067,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           element.attr('aria-expanded', false);
 
           if(bodyClassWhileListVisible) {
-            angular.element("body").removeClass(bodyClassWhileListVisible);
+            angular.element('body').removeClass(bodyClassWhileListVisible);
           }
         };
 
@@ -5126,7 +5126,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
                 element.attr('aria-expanded', true);
                 if(bodyClassWhileListVisible) {
-                  angular.element("body").addClass(bodyClassWhileListVisible);
+                  angular.element('body').addClass(bodyClassWhileListVisible);
                 }
 
 
@@ -5399,9 +5399,16 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         return attrs.popupTemplateUrl || 'template/typeahead/typeahead-popup.html';
       },
       link: function(scope, element, attrs) {
+        var isMouseMovedOverDropdownItem,
+            activeDropdownItemIndex;
+
         scope.templateUrl = attrs.templateUrl;
 
         scope.isOpen = function() {
+          if (scope.matches.length <= 0) {
+            isMouseMovedOverDropdownItem = false;
+          }
+
           return scope.matches.length > 0;
         };
 
@@ -5410,12 +5417,33 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         };
 
         scope.selectActive = function(matchIdx) {
-          scope.active = matchIdx;
+          if (isMouseMovedOverDropdownItem) {
+            scope.active = matchIdx;
+            activeDropdownItemIndex = matchIdx;
+          }
+        };
+
+        scope.onMouseMoveOverDropDownItem = function(itemIndex) {
+          isMouseMovedOverDropdownItem = true;
+
+          if (activeDropdownItemIndex !== itemIndex) {
+            scope.selectActive(itemIndex);
+          }
         };
 
         scope.selectMatch = function(activeIdx) {
           scope.select({activeIdx:activeIdx});
         };
+
+        var moveInProgressWatcher = scope.$watch('moveInProgress', function() {
+          if (scope.moveInProgress) {
+            isMouseMovedOverDropdownItem = false;
+          }
+        });
+
+        scope.$on('$destroy', function() {
+          moveInProgressWatcher();
+        });
       }
     };
   })
@@ -5465,7 +5493,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
     };
   }]);
 
-angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/accordion/accordion-group.html",
     "<div class=\"panel {{panelClass || 'panel-default'}}\">\n" +
     "  <div class=\"panel-heading\" ng-keypress=\"toggleOpen($event)\">\n" +
@@ -5480,12 +5508,12 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
     "");
 }]);
 
-angular.module("template/accordion/accordion.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/accordion/accordion.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/accordion/accordion.html",
     "<div class=\"panel-group\" ng-transclude></div>");
 }]);
 
-angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/alert/alert.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/alert/alert.html",
     "<div class=\"alert\" ng-class=\"['alert-' + (type || 'warning'), closeable ? 'alert-dismissible' : null]\" role=\"alert\">\n" +
     "    <button ng-show=\"closeable\" type=\"button\" class=\"close\" ng-click=\"close($event)\">\n" +
@@ -5497,7 +5525,7 @@ angular.module("template/alert/alert.html", []).run(["$templateCache", function(
     "");
 }]);
 
-angular.module("template/carousel/carousel.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/carousel/carousel.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/carousel/carousel.html",
     "<div ng-mouseenter=\"pause()\" ng-mouseleave=\"play()\" class=\"carousel\" ng-swipe-right=\"prev()\" ng-swipe-left=\"next()\">\n" +
     "    <ol class=\"carousel-indicators\" ng-show=\"slides.length > 1\">\n" +
@@ -5510,7 +5538,7 @@ angular.module("template/carousel/carousel.html", []).run(["$templateCache", fun
     "");
 }]);
 
-angular.module("template/carousel/slide.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/carousel/slide.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/carousel/slide.html",
     "<div ng-class=\"{\n" +
     "    'active': active\n" +
@@ -5518,7 +5546,7 @@ angular.module("template/carousel/slide.html", []).run(["$templateCache", functi
     "");
 }]);
 
-angular.module("template/datepicker/datepicker.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/datepicker/datepicker.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/datepicker/datepicker.html",
     "<div ng-switch=\"datepickerMode\" role=\"application\" ng-keydown=\"keydown($event)\">\n" +
     "  <daypicker ng-switch-when=\"day\" tabindex=\"0\"></daypicker>\n" +
@@ -5527,7 +5555,7 @@ angular.module("template/datepicker/datepicker.html", []).run(["$templateCache",
     "</div>");
 }]);
 
-angular.module("template/datepicker/day.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/datepicker/day.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/datepicker/day.html",
     "<table role=\"grid\" aria-labelledby=\"{{::uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
     "  <thead>\n" +
@@ -5553,7 +5581,7 @@ angular.module("template/datepicker/day.html", []).run(["$templateCache", functi
     "");
 }]);
 
-angular.module("template/datepicker/month.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/datepicker/month.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/datepicker/month.html",
     "<table role=\"grid\" aria-labelledby=\"{{::uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
     "  <thead>\n" +
@@ -5574,7 +5602,7 @@ angular.module("template/datepicker/month.html", []).run(["$templateCache", func
     "");
 }]);
 
-angular.module("template/datepicker/popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/datepicker/popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/datepicker/popup.html",
     "<ul class=\"dropdown-menu\" ng-if=\"isOpen\" style=\"display: block\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" ng-keydown=\"keydown($event)\" ng-click=\"$event.stopPropagation()\">\n" +
     "	<li ng-transclude></li>\n" +
@@ -5589,7 +5617,7 @@ angular.module("template/datepicker/popup.html", []).run(["$templateCache", func
     "");
 }]);
 
-angular.module("template/datepicker/year.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/datepicker/year.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/datepicker/year.html",
     "<table role=\"grid\" aria-labelledby=\"{{::uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
     "  <thead>\n" +
@@ -5610,7 +5638,7 @@ angular.module("template/datepicker/year.html", []).run(["$templateCache", funct
     "");
 }]);
 
-angular.module("template/modal/backdrop.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/modal/backdrop.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/modal/backdrop.html",
     "<div class=\"modal-backdrop\"\n" +
     "     modal-animation-class=\"fade\"\n" +
@@ -5620,7 +5648,7 @@ angular.module("template/modal/backdrop.html", []).run(["$templateCache", functi
     "");
 }]);
 
-angular.module("template/modal/window.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/modal/window.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/modal/window.html",
     "<div modal-render=\"{{$isRendered}}\" tabindex=\"-1\" role=\"dialog\" class=\"modal\"\n" +
     "    modal-animation-class=\"fade\"\n" +
@@ -5631,7 +5659,7 @@ angular.module("template/modal/window.html", []).run(["$templateCache", function
     "");
 }]);
 
-angular.module("template/pagination/pager.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/pagination/pager.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/pagination/pager.html",
     "<ul class=\"pager\">\n" +
     "  <li ng-class=\"{disabled: noPrevious()||ngDisabled, previous: align}\"><a href ng-click=\"selectPage(page - 1, $event)\">{{::getText('previous')}}</a></li>\n" +
@@ -5640,7 +5668,7 @@ angular.module("template/pagination/pager.html", []).run(["$templateCache", func
     "");
 }]);
 
-angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/pagination/pagination.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/pagination/pagination.html",
     "<ul class=\"pagination\">\n" +
     "  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: noPrevious()||ngDisabled}\" class=\"pagination-first\"><a href ng-click=\"selectPage(1, $event)\">{{::getText('first')}}</a></li>\n" +
@@ -5652,7 +5680,7 @@ angular.module("template/pagination/pagination.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("template/tooltip/tooltip-html-popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tooltip/tooltip-html-popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tooltip/tooltip-html-popup.html",
     "<div class=\"tooltip\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5664,7 +5692,7 @@ angular.module("template/tooltip/tooltip-html-popup.html", []).run(["$templateCa
     "");
 }]);
 
-angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tooltip/tooltip-html-unsafe-popup.html",
     "<div class=\"tooltip\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5676,7 +5704,7 @@ angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$tem
     "");
 }]);
 
-angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tooltip/tooltip-popup.html",
     "<div class=\"tooltip\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5688,7 +5716,7 @@ angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("template/tooltip/tooltip-template-popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tooltip/tooltip-template-popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tooltip/tooltip-template-popup.html",
     "<div class=\"tooltip\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5702,7 +5730,7 @@ angular.module("template/tooltip/tooltip-template-popup.html", []).run(["$templa
     "");
 }]);
 
-angular.module("template/popover/popover-html.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/popover/popover-html.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/popover/popover-html.html",
     "<div class=\"popover\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5718,7 +5746,7 @@ angular.module("template/popover/popover-html.html", []).run(["$templateCache", 
     "");
 }]);
 
-angular.module("template/popover/popover-template.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/popover/popover-template.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/popover/popover-template.html",
     "<div class=\"popover\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5736,7 +5764,7 @@ angular.module("template/popover/popover-template.html", []).run(["$templateCach
     "");
 }]);
 
-angular.module("template/popover/popover.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/popover/popover.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/popover/popover.html",
     "<div class=\"popover\"\n" +
     "  tooltip-animation-class=\"fade\"\n" +
@@ -5752,18 +5780,18 @@ angular.module("template/popover/popover.html", []).run(["$templateCache", funct
     "");
 }]);
 
-angular.module("template/progressbar/bar.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/progressbar/bar.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/progressbar/bar.html",
     "<div class=\"progress-bar\" ng-class=\"type && 'progress-bar-' + type\" role=\"progressbar\" aria-valuenow=\"{{value}}\" aria-valuemin=\"0\" aria-valuemax=\"{{max}}\" ng-style=\"{width: (percent < 100 ? percent : 100) + '%'}\" aria-valuetext=\"{{percent | number:0}}%\" style=\"min-width: 0;\" ng-transclude></div>\n" +
     "");
 }]);
 
-angular.module("template/progressbar/progress.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/progressbar/progress.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/progressbar/progress.html",
     "<div class=\"progress\" ng-transclude></div>");
 }]);
 
-angular.module("template/progressbar/progressbar.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/progressbar/progressbar.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/progressbar/progressbar.html",
     "<div class=\"progress\">\n" +
     "  <div class=\"progress-bar\" ng-class=\"type && 'progress-bar-' + type\" role=\"progressbar\" aria-valuenow=\"{{value}}\" aria-valuemin=\"0\" aria-valuemax=\"{{max}}\" ng-style=\"{width: (percent < 100 ? percent : 100) + '%'}\" aria-valuetext=\"{{percent | number:0}}%\" style=\"min-width: 0;\" ng-transclude></div>\n" +
@@ -5771,7 +5799,7 @@ angular.module("template/progressbar/progressbar.html", []).run(["$templateCache
     "");
 }]);
 
-angular.module("template/rating/rating.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/rating/rating.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/rating/rating.html",
     "<span ng-mouseleave=\"reset()\" ng-keydown=\"onKeydown($event)\" tabindex=\"0\" role=\"slider\" aria-valuemin=\"0\" aria-valuemax=\"{{range.length}}\" aria-valuenow=\"{{value}}\">\n" +
     "    <span ng-repeat-start=\"r in range track by $index\" class=\"sr-only\">({{ $index < value ? '*' : ' ' }})</span>\n" +
@@ -5780,7 +5808,7 @@ angular.module("template/rating/rating.html", []).run(["$templateCache", functio
     "");
 }]);
 
-angular.module("template/tabs/tab.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tabs/tab.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tabs/tab.html",
     "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
     "  <a href ng-click=\"select()\" tab-heading-transclude>{{heading}}</a>\n" +
@@ -5788,7 +5816,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
     "");
 }]);
 
-angular.module("template/tabs/tabset.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/tabs/tabset.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/tabs/tabset.html",
     "<div>\n" +
     "  <ul class=\"nav nav-{{type || 'tabs'}}\" ng-class=\"{'nav-stacked': vertical, 'nav-justified': justified}\" ng-transclude></ul>\n" +
@@ -5803,7 +5831,7 @@ angular.module("template/tabs/tabset.html", []).run(["$templateCache", function(
     "");
 }]);
 
-angular.module("template/timepicker/timepicker.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/timepicker/timepicker.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/timepicker/timepicker.html",
     "<table>\n" +
     "  <tbody>\n" +
@@ -5834,16 +5862,16 @@ angular.module("template/timepicker/timepicker.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("template/typeahead/typeahead-match.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/typeahead/typeahead-match.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/typeahead/typeahead-match.html",
     "<a href tabindex=\"-1\" ng-bind-html=\"match.label | typeaheadHighlight:query\"></a>\n" +
     "");
 }]);
 
-angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function($templateCache) {
+angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function ($templateCache) {
   $templateCache.put("template/typeahead/typeahead-popup.html",
     "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
-    "    <li ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "    <li ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mousemove=\"onMouseMoveOverDropDownItem($index)\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{::match.id}}\">\n" +
     "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
     "</ul>\n" +

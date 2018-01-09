@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 0.13.7 - 2017-01-26
+ * Version: 0.13.8 - 2018-01-09
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.transition","ui.bootstrap.typeahead"]);
@@ -5066,7 +5066,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           element.attr('aria-expanded', false);
 
           if(bodyClassWhileListVisible) {
-            angular.element("body").removeClass(bodyClassWhileListVisible);
+            angular.element('body').removeClass(bodyClassWhileListVisible);
           }
         };
 
@@ -5125,7 +5125,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
                 element.attr('aria-expanded', true);
                 if(bodyClassWhileListVisible) {
-                  angular.element("body").addClass(bodyClassWhileListVisible);
+                  angular.element('body').addClass(bodyClassWhileListVisible);
                 }
 
 
@@ -5398,9 +5398,16 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         return attrs.popupTemplateUrl || 'template/typeahead/typeahead-popup.html';
       },
       link: function(scope, element, attrs) {
+        var isMouseMovedOverDropdownItem,
+            activeDropdownItemIndex;
+
         scope.templateUrl = attrs.templateUrl;
 
         scope.isOpen = function() {
+          if (scope.matches.length <= 0) {
+            isMouseMovedOverDropdownItem = false;
+          }
+
           return scope.matches.length > 0;
         };
 
@@ -5409,12 +5416,33 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         };
 
         scope.selectActive = function(matchIdx) {
-          scope.active = matchIdx;
+          if (isMouseMovedOverDropdownItem) {
+            scope.active = matchIdx;
+            activeDropdownItemIndex = matchIdx;
+          }
+        };
+
+        scope.onMouseMoveOverDropDownItem = function(itemIndex) {
+          isMouseMovedOverDropdownItem = true;
+
+          if (activeDropdownItemIndex !== itemIndex) {
+            scope.selectActive(itemIndex);
+          }
         };
 
         scope.selectMatch = function(activeIdx) {
           scope.select({activeIdx:activeIdx});
         };
+
+        var moveInProgressWatcher = scope.$watch('moveInProgress', function() {
+          if (scope.moveInProgress) {
+            isMouseMovedOverDropdownItem = false;
+          }
+        });
+
+        scope.$on('$destroy', function() {
+          moveInProgressWatcher();
+        });
       }
     };
   })

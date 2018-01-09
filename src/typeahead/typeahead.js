@@ -143,7 +143,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
           element.attr('aria-expanded', false);
 
           if(bodyClassWhileListVisible) {
-            angular.element("body").removeClass(bodyClassWhileListVisible);
+            angular.element('body').removeClass(bodyClassWhileListVisible);
           }
         };
 
@@ -202,7 +202,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
 
                 element.attr('aria-expanded', true);
                 if(bodyClassWhileListVisible) {
-                  angular.element("body").addClass(bodyClassWhileListVisible);
+                  angular.element('body').addClass(bodyClassWhileListVisible);
                 }
 
 
@@ -475,9 +475,16 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         return attrs.popupTemplateUrl || 'template/typeahead/typeahead-popup.html';
       },
       link: function(scope, element, attrs) {
+        var isMouseMovedOverDropdownItem,
+            activeDropdownItemIndex;
+
         scope.templateUrl = attrs.templateUrl;
 
         scope.isOpen = function() {
+          if (scope.matches.length <= 0) {
+            isMouseMovedOverDropdownItem = false;
+          }
+
           return scope.matches.length > 0;
         };
 
@@ -486,12 +493,33 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position'])
         };
 
         scope.selectActive = function(matchIdx) {
-          scope.active = matchIdx;
+          if (isMouseMovedOverDropdownItem) {
+            scope.active = matchIdx;
+            activeDropdownItemIndex = matchIdx;
+          }
+        };
+
+        scope.onMouseMoveOverDropDownItem = function(itemIndex) {
+          isMouseMovedOverDropdownItem = true;
+
+          if (activeDropdownItemIndex !== itemIndex) {
+            scope.selectActive(itemIndex);
+          }
         };
 
         scope.selectMatch = function(activeIdx) {
           scope.select({activeIdx:activeIdx});
         };
+
+        var moveInProgressWatcher = scope.$watch('moveInProgress', function() {
+          if (scope.moveInProgress) {
+            isMouseMovedOverDropdownItem = false;
+          }
+        });
+
+        scope.$on('$destroy', function() {
+          moveInProgressWatcher();
+        });
       }
     };
   })

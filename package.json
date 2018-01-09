@@ -1,10 +1,10 @@
 {
   "author": "https://github.com/angular-ui/bootstrap/graphs/contributors",
   "name": "angular-ui-bootstrap",
-  "version": "0.13.7",
+  "version": "0.13.8",
   "homepage": "http://angular-ui.github.io/bootstrap/",
   "dependencies": {},
-  "scripts":{
+  "scripts": {
     "test": "grunt"
   },
   "repository": {
